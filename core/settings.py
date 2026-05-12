@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     # Third party applar
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+    'drf_spectacular',
 
     # O'zim yaratgan applar
     'users',
@@ -88,7 +90,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'sales',
         'USER': 'postgres',
-        'PASSWORD': 'admin',
+        'PASSWORD': 'postgres',
         'HOST': 'localhost',
         'PORT': '5432'
         
@@ -98,6 +100,8 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
+
+AUTH_USER_MODEL = 'users.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -131,3 +135,71 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
+
+# REST Framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# drf-spectacular (Swagger / OpenAPI)
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Sales Management API',
+    'DESCRIPTION': (
+        'Do\'kon va savdo boshqaruv tizimi uchun REST API.\n\n'
+        '**Autentifikatsiya:** Barcha himoyalangan endpointlar uchun '
+        '`Authorization: Bearer <access_token>` sarlavhasi talab qilinadi.'
+    ),
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SCHEMA_PATH_PREFIX': '/api/',
+    'TAGS': [
+        {'name': 'Auth',              'description': 'Kirish, chiqish va token boshqaruvi'},
+        {'name': 'Branches',          'description': 'Filiallar'},
+        {'name': 'Roles',             'description': 'Xodim rollari va ruxsatlar'},
+        {'name': 'Users',             'description': 'Foydalanuvchilar (xodimlar)'},
+        {'name': 'Sales Targets',     'description': 'Savdo rejalari (plan)'},
+        {'name': 'Categories',        'description': 'Mahsulot kategoriyalari (daraxt)'},
+        {'name': 'Brands',            'description': 'Brendlar'},
+        {'name': 'Units',             'description': "O'lchov birliklari"},
+        {'name': 'Product Attributes','description': 'Mahsulot xususiyat turlari'},
+        {'name': 'Products',          'description': 'Mahsulotlar katalogi'},
+        {'name': 'Product Variants',  'description': 'Mahsulot variantlari (SKU, shtrix-kod)'},
+        {'name': 'Price Lists',       'description': "Narxlar ro'yxati"},
+        {'name': 'Customer Groups',   'description': 'Mijoz guruhlari (VIP, oddiy va h.k.)'},
+        {'name': 'Customers',         'description': 'Mijozlar (CRM)'},
+        {'name': 'Cash Registers',    'description': 'Kassalar'},
+        {'name': 'Cash Sessions',     'description': 'Kassa smenalari'},
+        {'name': 'Sales',             'description': 'Sotuvlar va cheklar'},
+        {'name': 'Payment Methods',   'description': "To'lov usullari"},
+        {'name': 'Expense Categories','description': 'Xarajat turlari'},
+        {'name': 'Expenses',          'description': 'Xarajatlar'},
+        {'name': 'Cash Movements',    'description': 'Kassa harakatlari (kirim/chiqim)'},
+        {'name': 'Warehouses',        'description': 'Omborxonalar'},
+        {'name': 'Stock',             'description': 'Tovar qoldiqlari'},
+        {'name': 'Suppliers',         'description': 'Yetkazib beruvchilar'},
+        {'name': 'Purchase Orders',   'description': 'Kirim buyurtmalari'},
+        {'name': 'Stock Transfers',   'description': "Omborlar o'rtasida tovar ko'chirish"},
+        {'name': 'Inventory',         'description': 'Inventarizatsiya (reviziya)'},
+        {'name': 'Write-offs',        'description': 'Hisobdan chiqarishlar'},
+    ],
+}
+
+# Simple JWT
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+}

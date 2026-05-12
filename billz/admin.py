@@ -1,3 +1,7 @@
 from django.contrib import admin
+from billz.models import CashRegister, CashSession, CustomerGroup
 
-# Register your models here.
+admin.site.register(CashRegister)
+admin.site.register(CashSession)
+admin.site.register(CustomerGroup)
+
