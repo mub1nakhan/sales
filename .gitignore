@@ -4,3 +4,7 @@ venv/
 *.db
 !**/migrations/__init__.py
 **/__pycache__/
+node_modules/
+venv/
+__pycache__/
+*.pyc
